@@ -2,10 +2,11 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
+from django.contrib.auth.models import UserManager
 
 
-class UserProfileManager():
-    """Manger for User Profiles"""
+class UserProfileManager(BaseUserManager):
+    """Manager for User Profiles"""
 
     def create_user(self, email, name, password=None):
         """Create a new user profile"""
@@ -13,11 +14,9 @@ class UserProfileManager():
             raise ValueError('User must have an email address')
 
         email = self.normalize_email(email)
-        user = self.model(email=email, name=name)
-
+        user =self.model(email=email,name=name)
         user.set_password(password)
         user.save(using=self._db)
-
         return user
 
     def create_superuser(self, email, name, password=None):
@@ -43,7 +42,7 @@ class UserProfile(AbstractBaseUser,PermissionsMixin):
     objects =UserProfileManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FILEDS = ['name']
+    REQUIRED_FIELDS = ['name']
 
     def get_full_name(self):
         """Retrive Full Name of User"""
